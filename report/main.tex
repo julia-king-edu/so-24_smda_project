@@ -1,0 +1,126 @@
+% !TeX program = pdflatex
+% !TeX encoding = UTF-8
+\documentclass[fontsize=11pt, parskip=half]{scrartcl}
+
+\include{preamble}
+
+%Title, Author, ...
+\makeatletter
+\title{Conspiracy narratives and public perception of 15-minute cities on YouTube}\let\Title\@title
+\def \papersubtitle {Project Report}
+\def \paperdeadline {21.08.2024}
+% seminar information
+\def \paperevaluator {Max Pellert}
+\def \paperseminar {Social Media Data Analysis}
+\def \papersemester {Summer/Winter Semester 2024}
+\def \paperdepartment {Department of Politics and Public Administration}
+\def \paperuniversity {University of Konstanz}
+% personal information
+\def \paperemail {julia.king@uni-konstanz.de}
+\def \paperprogramme {M.Sc. Social and Economic Data Science}
+\def \papermatriculationnr {01/911139}
+\author{Julia King}          \let\Author\@author
+\date{\today}           \let\Date\@date
+\makeatother
+
+% Page Layout
+\ihead{Julia K.}
+\chead{Conspiracy narratives \& public perception of 15-minute cities on YouTube}
+\ohead{SMDA}
+
+% caption setup
+\captionsetup{labelfont=bf, textfont=it, justification=raggedright,singlelinecheck=false}
+
+% citation setup
+\usepackage[style=apa, sorting=nyt, backend=biber]{biblatex}
+\usepackage{etoolbox} % If not already included
+\addbibresource{citations.bib} %bibliography file
+
+\begin{document}
+\setlength{\columnsep}{25pt}
+
+% Title Page, do not change here, variables are defined above!
+\begin{titlepage}
+    \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+    
+    \begin{flushleft} % Upper left corner
+        \large
+        \paperuniversity\\
+        \paperdepartment\\
+        \papersemester\\
+        \paperseminar\\
+        \paperevaluator
+    \end{flushleft}
+    
+    \vfill
+    
+    \begin{center} % Centered title and date
+        \huge\bfseries \Title\\
+        \vspace{0.5cm}
+        \large \papersubtitle \\
+        \vspace{0.5cm}
+        \small Deadline: \paperdeadline
+    \end{center}
+    
+    \vfill
+    
+    \begin{flushright} % Lower right corner
+        \large
+        \Author\\
+        \papermatriculationnr\\
+        \paperprogramme\\
+        \paperemail
+    \end{flushright}
+\end{titlepage}
+
+\clearpage
+\setcounter{page}{1}
+
+% Main Document
+\section{Motivation}
+\label{section:motivation}
+    \parencite[12]{gloverConspiracyThinking15Minute2024}
+    
+    \begin{wrapfigure}{r}{0.4\textwidth}
+        \setlength\intextsep{0pt}
+        \vspace{-30pt}
+        \caption{} % leave empty, will print "Figure x" above it
+        \includegraphics[width=0.38 \textwidth]{img/ex.png}
+        \vspace{-5pt}
+        \caption*{Caption here.}
+        \vspace{-20pt}
+        \label{fig:attitude-distribution}
+    \end{wrapfigure}
+    
+\section{Data Retrieval}
+\label{section:retrieval}
+
+    f
+
+\section{Data Processing}
+\label{section:processing}
+
+    d
+    
+\section{Analysis}
+\label{section:analysis}
+
+    d
+
+\section{Conclusion}
+\label{section:conclusion}
+
+    d
+
+\section{Critique}
+\label{section:critique}
+
+    d
+
+\newpage
+
+\onecolumn
+\printbibliography[heading=bibintoc, title={References}]
+
+
+\end{document}

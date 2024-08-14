@@ -1,0 +1,50 @@
+%preamble loading packages and so on
+
+%packages
+\usepackage{scrlayer-scrpage}
+\usepackage[datesep={.}, style=ddmmyyyy]{datetime2}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage[colorlinks=true, urlcolor=blue, linkcolor=black]{hyperref}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{listings}
+\usepackage{csquotes}
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage[a4paper, top=2cm, bottom=2cm, left=2.5cm, right=2.5cm]{geometry}
+\MakeOuterQuote{"}
+\usepackage{array}   % for \newcolumntype macro
+\newcolumntype{L}{>{$}l<{$}} % math-mode version of "l" column type
+\newcolumntype{C}{>{$}c<{$}} % math-mode version of "c" column type
+\newcolumntype{R}{>{$}r<{$}} % math-mode version of "r" column type
+
+%%%%%%%%%%%%%%
+%commands
+%%%%%%%%%%%%%%
+
+%formatting
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}} %changes subsection labelling to alphabetical -> 1.a instead of 1.1
+%generalmath
+\newcommand\br[1]{\ensuremath{\left(#1\right)}}
+\newcommand\modulo[1]{\ensuremath{\bmod{\left(#1\right)}}} %adds \modulo{} as command for modulo calculations. Content is placed in brackets.
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil} %defines \ceil{} as command producing mathematical ceiling symbols around content
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor} %defines \floor{} as command producing mathematical floor symbols around content
+\newcommand\bsum[3]{\ensuremath{\sum_{#1}^{#2}{\left({#3}\right)}}} %defines \bsum{}{}{} as command for large sum with start, end and content. Content is placed in brackets.
+\newcommand\bprod[3]{\ensuremath{\prod_{#1}^{#2}{\left({#3}\right)}}} %defines \bprod{}{}{} as command for large product with start, end and content. Content is placed in brackets.
+\newcommand\texeq[1]{\stackrel{\mathclap{\normalfont\mbox{\scriptsize {#1}}}}{=}} %defines \teq as command for equal sign with subscript
+\newcommand\defeq{\ensuremath{=_{def}}} %defines \defeq as command for definition with equal sign
+
+%formal logic
+\newcommand\bland[3]{\ensuremath{\bigwedge_{#1}^{#2}{\left({#3}\right)}}} %defines \bland{}{}{} as command for large logical AND with start, end and content. Content is placed in brackets.
+\newcommand\blor[3]{\ensuremath{\bigvee_{#1}^{#2}{\left({#3}\right)}}} %defines \bland{}{}{} as command for large logical OR with start, end and content. Content is placed in brackets.
+\newcommand\bforall[2]{\ensuremath{\left(\forall {#1}\right) \left[{#2}\right]}} %defines \bforall{}{} as command for logical forall with variable and content. forall and variable are placed within (), Content is placed in [].
+\newcommand\bexists[2]{\ensuremath{\left(\exists {#1}\right) \left[{#2}\right]}} %defines \bexists{}{} as command for logical exists with variable and content. forall and variable are placed within (), Content is placed in [].
+
+%Mathmatical Sets (Mengenlehre)
+\newcommand\intenset[2]{\ensuremath{\left\lbrace {#1} \mid {#2} \right\rbrace}} %defines \intenset{}{} as command for intensional notation of mathmatical sets: {@|@}.
+\newcommand\intensetU[2]{\ensuremath{\left\lbrace {#1} \in U \mid {#2} \right\rbrace}} %defines \intensetU{}{} as command for intensional notation of mathmatical sets: {@ \in U |@}.
+\newcommand\extenset[1]{\ensuremath{\left\lbrace {#1} \right\rbrace}} %defines \extenset{} as command for extensional notation of mathmatical sets: {@}.
+
+% referencing
+\newcommand\fref[1]{\textbf{Figure \ref{#1}}} % defines \fref{} as command printing "Figure figurenumber" in bold.

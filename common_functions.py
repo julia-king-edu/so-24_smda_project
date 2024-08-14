@@ -138,6 +138,24 @@ def read_video_json(location : str = "data/videos.json") -> list:
 
     return video_json
 
+
+# dataframe reading / writing
+def convert_conspirative_to_bool(df : pd.DataFrame) -> pd.DataFrame:
+    """in a given df, converts all columns whose name starts with "conspirative" to bool.
+
+    Args:
+        df (pd.DataFrame): df
+
+    Returns:
+        pd.DataFrame: copy of dataframe with the column types changed.
+    """
+    
+    df_copy = deepcopy(df)
+    label_cols = [col for col in df_copy if col.startswith("conspirative")]
+    for col in label_cols:
+        df_copy[col] = pd.to_numeric(df_copy[col]).astype("boolean")
+    return df_copy
+
 # functions to read/write the manual sample
 
 def write_manual_sample(manual_sample : pd.DataFrame, filepath : str = "data/manual_sample.csv"):
@@ -151,7 +169,7 @@ def write_manual_sample(manual_sample : pd.DataFrame, filepath : str = "data/man
     manual_sample.to_csv(filepath, index = False, quoting = csv.QUOTE_MINIMAL)
     
 def read_manual_sample(filepath : str = "data/manual_sample.csv") -> pd.DataFrame:
-    """Reads manual sample file, mostly here to complete the read/write function set.
+    """Reads manual sample file.
 
     Args:
         filepath (str, optional): file path to manual sample file. Defaults to "data/manual_sample.csv".
@@ -161,27 +179,26 @@ def read_manual_sample(filepath : str = "data/manual_sample.csv") -> pd.DataFram
     """
 
     manual_sample = pd.read_csv(filepath)
-    manual_sample["conspirative"] = pd.to_numeric(manual_sample["conspirative"], errors = "coerce")
-    manual_sample["conspirative"] = manual_sample["conspirative"].astype("boolean")
+    manual_sample = convert_conspirative_to_bool(manual_sample)
     return manual_sample
 
 # functions to read/write the video df
 
 def write_video_df(video_df : pd.DataFrame, filepath : str = "data/videos.csv"):
-    """Write the manual sample to a csv. Careful not to overwrite!
+    """Write the video df to a csv. Careful not to overwrite!
 
     Args:
-        manual_sample (pd.DataFrame): video df generated in data_processing
+        video_df (pd.DataFrame): video df generated in data_processing
         filepath (str, optional): file path to save to. Defaults to "data/videos.csv".
     """
     
     video_df.to_csv(filepath, quoting = csv.QUOTE_MINIMAL)
     
 def read_video_df(filepath : str = "data/videos.csv") -> pd.DataFrame:
-    """Reads manual sample file, mostly here to complete the read/write function set.
+    """Reads file containing the video df.
 
     Args:
-        filepath (str, optional): file path to manual sample file. Defaults to "data/videos.csv".
+        filepath (str, optional): file path to video df file. Defaults to "data/videos.csv".
 
     Returns:
         pd.DataFrame: maunual sample
@@ -189,20 +206,40 @@ def read_video_df(filepath : str = "data/videos.csv") -> pd.DataFrame:
     
     video_df = pd.read_csv(filepath)
     # convert label cols
-    label_cols = [col for col in video_df if col.startswith("conspirative_")]
-    for col in label_cols:
-        video_df[col] = pd.to_numeric(video_df[col], errors = "coerce")
-        video_df[col] = video_df[col].astype("boolean")
+    video_df = convert_conspirative_to_bool(video_df)
     
     # set id as index
-    video_df = video_df.set_index("id")
+    video_df = video_df.set_index("video_id")
     
     return video_df
 
-def convert_conspirative_to_bool(df : pd.DataFrame) -> pd.DataFrame:
-    # generate docstring by typing """
+# functions to read/write the comments df
+
+def write_comment_df(comment_df : pd.DataFrame, filepath : str = "data/comments.csv"):
+    """Write the comments df to a csv. Careful not to overwrite!
+
+    Args:
+        comment_df (pd.DataFrame): comment df generated in data_processing
+        filepath (str, optional): file path to save to. Defaults to "data/comments.csv".
+    """
     
-    df_copy = deepcopy(df)
-    label_cols = [col for col in df_copy if col.startswith("conspirative_")]
-    df_copy[label_cols] = df_copy[label_cols].astype("boolean")
-    return df_copy
+    comment_df.to_csv(filepath, quoting = csv.QUOTE_MINIMAL)
+    
+def read_comment_df(filepath : str = "data/comments.csv") -> pd.DataFrame:
+    """Reads file containing the comments df.
+
+    Args:
+        filepath (str, optional): file path to comment df file. Defaults to "data/comments.csv".
+
+    Returns:
+        pd.DataFrame: maunual sample
+    """
+    
+    comment_df = pd.read_csv(filepath)
+    # convert label cols
+    comment_df = convert_conspirative_to_bool(comment_df)
+    
+    # set id as index
+    comment_df = comment_df.set_index("comment_id")
+    
+    return comment_df
