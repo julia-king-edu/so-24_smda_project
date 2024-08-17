@@ -207,6 +207,8 @@ def read_video_df(filepath : str = "data/videos.csv") -> pd.DataFrame:
     video_df = pd.read_csv(filepath)
     # convert label cols
     video_df = convert_conspirative_to_bool(video_df)
+    # convert cols to categorical
+    video_df["phase"] = pd.Categorical(video_df["phase"])
     
     # set id as index
     video_df = video_df.set_index("video_id")
@@ -236,8 +238,9 @@ def read_comment_df(filepath : str = "data/comments.csv") -> pd.DataFrame:
     """
     
     comment_df = pd.read_csv(filepath)
-    # convert label cols
-    comment_df = convert_conspirative_to_bool(comment_df)
+    # convert columns to categorical
+    comment_df["phase"] = pd.Categorical(comment_df["phase"])
+    comment_df["label_leia"] = pd.Categorical(comment_df["label_leia"])
     
     # set id as index
     comment_df = comment_df.set_index("comment_id")
