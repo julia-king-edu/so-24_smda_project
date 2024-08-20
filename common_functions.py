@@ -18,6 +18,34 @@ def confirm_execution(prompt : str = "The current cell may delete previously gat
     
     return
 
+# convenience functions to read/write the google trends df
+
+def write_gtrends_df(gtrends_df : pd.DataFrame, filepath : str = "data/gtrends.csv"):
+    """Write the gtrends df to a csv. Careful not to overwrite!
+
+    Args:
+        gtrends_df (pd.DataFrame): df generated in data_collection
+        filepath (str, optional): file path to save to. Defaults to "data/gtrends.csv".
+    """
+    
+    gtrends_df.to_csv(filepath, index = False)
+    
+def read_gtrends_df(filepath : str = "data/gtrends.csv") -> pd.DataFrame:
+    """Reads file containing the gtrends df.
+
+    Args:
+        filepath (str, optional): file path to gtrends df file. Defaults to "data/gtrends.csv".
+
+    Returns:
+        pd.DataFrame: google trends data
+    """
+    
+    gtrends_df = pd.read_csv(filepath)
+    # convert
+    gtrends_df["date"] = pd.to_datetime(gtrends_df["date"])
+    
+    return gtrends_df
+
 
 # write functions to write / load the search_results json (separate function is necessary as it needs to store datetime values. these need to be converted to string before saving and from string when loading)
 
@@ -175,7 +203,7 @@ def read_manual_sample(filepath : str = "data/manual_sample.csv") -> pd.DataFram
         filepath (str, optional): file path to manual sample file. Defaults to "data/manual_sample.csv".
 
     Returns:
-        pd.DataFrame: maunual sample
+        pd.DataFrame: manual sample
     """
 
     manual_sample = pd.read_csv(filepath)
@@ -201,14 +229,15 @@ def read_video_df(filepath : str = "data/videos.csv") -> pd.DataFrame:
         filepath (str, optional): file path to video df file. Defaults to "data/videos.csv".
 
     Returns:
-        pd.DataFrame: maunual sample
+        pd.DataFrame: video df
     """
     
     video_df = pd.read_csv(filepath)
     # convert label cols
     video_df = convert_conspirative_to_bool(video_df)
-    # convert cols to categorical
+    # convert cols to correct data types
     video_df["phase"] = pd.Categorical(video_df["phase"])
+    video_df["week_start"] = pd.to_datetime(video_df["week_start"])
     
     # set id as index
     video_df = video_df.set_index("video_id")
@@ -234,13 +263,14 @@ def read_comment_df(filepath : str = "data/comments.csv") -> pd.DataFrame:
         filepath (str, optional): file path to comment df file. Defaults to "data/comments.csv".
 
     Returns:
-        pd.DataFrame: maunual sample
+        pd.DataFrame: comment df
     """
     
     comment_df = pd.read_csv(filepath)
-    # convert columns to categorical
+    # convert columns to correct datatype
     comment_df["phase"] = pd.Categorical(comment_df["phase"])
     comment_df["label_leia"] = pd.Categorical(comment_df["label_leia"])
+    comment_df["week_start"] = pd.to_datetime(comment_df["week_start"])
     
     # set id as index
     comment_df = comment_df.set_index("comment_id")
