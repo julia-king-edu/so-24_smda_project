@@ -2,3 +2,4 @@ api_keys.py
 __pycache__/
 report/main.bbl
 report/main.synctex.gz
+local-tests.ipynb

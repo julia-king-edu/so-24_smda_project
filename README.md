@@ -37,6 +37,8 @@ The following steps were taken to answer the above hypotheses:
 
     /data: Contains datasets generated & used in analysis
 
+    /img: Contains the visualizations generated in the jupyter notebooks
+
     /presentation: Contains files used to generate the project presentation on 03.07.2024 and the registration
 
     /report: Contains the files used to generate the report handed in on 21.08.2024
