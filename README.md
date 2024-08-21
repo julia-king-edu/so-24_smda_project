@@ -5,7 +5,7 @@
 
 This project investiages the public discourse surrounding the concept of 15-minute cities on YouTube, focusing on the emergence and impact of conspiracy narratives during the COVID-19 pandemic. Through analysis of YouTube videos and their  comments, this project seeks to understand the development of the conspiracy theory and analyze engagement metrics over time.
 
-## Research Objectives
+## Hypotheses
 
 The hypotheses tested in this project are:
 
