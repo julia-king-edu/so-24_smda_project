@@ -8,7 +8,7 @@
 \makeatletter
 \title{Conspiracy narratives and public perception of 15-minute cities on YouTube}\let\Title\@title
 \def \papersubtitle {Project Report}
-\def \paperdeadline {21.08.2024}
+\def \paperdeadline {\href{https://github.com/julia-king-edu/so-24_smda_project}{Link to github repository}}
 % seminar information
 \def \paperevaluator {Max Pellert}
 \def \paperseminar {Social Media Data Analysis}
@@ -27,9 +27,6 @@
 \ihead{Julia K.}
 \chead{Conspiracy narratives \& public perception of 15-minute cities on YouTube}
 \ohead{SMDA}
-
-% caption setup
-\captionsetup{labelfont=bf, textfont=it, justification=raggedright,singlelinecheck=false}
 
 % citation setup
 \usepackage[style=apa, sorting=nyt, backend=biber]{biblatex}
@@ -75,7 +72,7 @@
         \vspace{0.5cm}
         \large \papersubtitle \\
         \vspace{0.5cm}
-        \small Deadline: \paperdeadline
+        \small \paperdeadline
     \end{center}
     
     \vfill
@@ -113,8 +110,6 @@ The code and data used in the project as well as additional visualizations can b
 \section{Data Retrieval}
 \label{section:retrieval}
 
-    \textcolor{red}{Explain the interfaces or resources you used to collect all data necessary for the project.}
-
     The following section will outline the various apis and data sources utilized in the project. Specifically, this project gathers data obtained from google trends (\citeyear{google15minuteCity2024}), which is then used to parametrize queries for the Youtube Data api (\citeyear{googlefordevelopersYoutubeDataApi2024}). Finally, the huggingface api (\citeyear{huggingfaceTransformers2024}) is utilized to allow sentiment classification via LEIA.
 
     In order to track the development of the conspiracy theory and test hypotheses \ref{h:1} and \ref{h:2}, an investigation of the progression of public attention was necessary. In line with previous research (including \cite{mavraganiAssessingMethodsTools2018,yeoPublicAttentionLocal2019,junTenYearsResearch2018a}), Google Trends data was chosen to model public interest and identify relevant phases of the conspiracy. Obtained via the pytrends package \parencite{dreyco676Pytrends2023} in python \parencite{vanrossumPythonReferenceManual2009}, the data was limited to the United States of America, as the conspiracy itself was highly focussed on the country. Additionally, Google Trends distinguishes between search terms and topics, with topics also including variants of the given term. Thus, the query was specified for the 15-minute city topic.
@@ -129,49 +124,133 @@ The code and data used in the project as well as additional visualizations can b
         \label{fig:gtrends_raw}
     \end{figure}
 
-    The results of the Google Trends data collection, visualized in Figure \ref{fig:gtrends_raw}, were crucial to the parametrization of the youtube api requests. Specifically, distinct phases centered around the presence or absence of a peak in public interest were algorithmically identified to ensure all relevant data was obtained while preventing excessive use of the api. For now, it is important to note that this procedure, the details of which will be discussed in \nameref{section:processing}, also yielded a cutoff-point before the first relevant phase.
+    The results of the Google Trends data collection, visualized in figure \ref{fig:gtrends_raw}, were crucial to the parametrization of the youtube api requests. Specifically, distinct phases centered around the presence or absence of a peak in public interest were algorithmically identified to ensure all relevant data was obtained while preventing excessive use of the api. For now, it is important to note that this procedure, the details of which will be discussed in \nameref{section:processing}, also yielded a cutoff-point before the first relevant phase.
 
-    Following the google trends data collection, multiple endpoints of the YouTube Data Api were utilized to obtain relevant data on the most-viewed videos regarding 15-minute cities. First, the \textit{search} endpoint was employed to identify the 50 most-viewed videos per week. This weekly structure, while quota-intensive, enabled the identification of temporal trends in the analysis stage and was thus crucial for this project. Afterwards, metadata on all of the identified videos was obtained using the \textit{video} endpoint. Finally, multiple queries to the \textit{commentThread} endpoint per video allowed for the collection of all top-level comments under all videos. In total, 119 weeks of videos were processed, resulting in a dataset containing information on 2943 videos and 204093 comments, a process that required multiple days due to the quota limits imposed by the YouTube Data API.
+    Following the google trends data collection, multiple endpoints of the YouTube Data Api were utilized to obtain relevant data on the most-viewed videos regarding 15-minute cities. First, the \textit{search} endpoint was employed to identify the 50 most-viewed videos per week. This weekly structure, while quota-intensive, enabled the identification of temporal trends in the analysis stage and was thus crucial for this project. Afterwards, metadata on all of the identified videos was obtained using the \textit{video} endpoint. Finally, multiple queries to the \textit{commentThread} endpoint per video allowed for the collection of all top-level comments under all videos. The data collection and analysis was limited to top-level comments, as those should provide the most accurate reflection of the audience reactions to the given video, instead of reactions to other comments.
+    
+    In total, 119 weeks of videos were processed, resulting in a dataset containing information on 2943 videos and 204093 comments, a process that required multiple days due to the quota limits imposed by the YouTube Data API. Note that some weeks, especially those before the first spike in public attention, did not have 50 new videos uploaded, leading to a smaller number of videos collected for those weeks. Despite this, the dataset still provides more than adequate data for analyzing the progression of the conspiracy theory surrounding 15-minute cities. 
 
     Finally, the huggingface api was utilized to obtain the LEIA-base transformer model \parencite{aroyehunLEIALinguisticEmbeddings2023}, which was later employed to classify the sentiments of the comments obtained via the YouTube Api. In addition to its performance in the assignments completed for this course, the LEIA-base model was chosen due to its ability to classify natural language sentiment in a fine-grained manner, distinguishing between Affection, Happiness, Anger, Sadness and Fear instead of a simple polarity score. This distinction of LEIA when compared to other sentiment analysis techniques such as VADER \parencite{cjhuttoVaderSentiment2020} is especially relevant in the context of conspiracy theories, as a comment expressing sadness implies a much lower threat level than a comment expressing anger. Thus, utilizing LEIA-base enables the generation of additional inferences into the conspiracy by providing a more fine-grained perspective.
 
 \section{Data Processing}
 \label{section:processing}
 
-    \textcolor{red}{Explain how you filtered data, normalized values, computed additional variables, etc.}
-
-    The Google Trends data  was utilized to identify distinct phases in public interest, with the goal of identifying connections to the development of the conspiracy theory. 
+    The Google Trends data  was utilized to identify distinct phases in public interest, enabling the progression of key variables during different stages of development of the conspiracy theory. Differences in rolling averages were used to identify the beginning and end of peaks, with steady increases indicating the beginning of a spike and the end of a steady decrease defining the end of a spike. As seen in figure \ref{fig:gtrends_phases}, four distinct phases were identified: 
+    \begin{enumerate}
+        \item The phase before the first spike, which is hypothesized to contain mostly educational videos on the concept of 15-minute cities.
+        \item The first spike, hypothesized to be caused by the rise of conspirative content.
+        \item The second spike, hypothesized to be caused by mainstream media coverage.
+        \item The phase after both spikes, where search volume has returned to a steady level.
+    \end{enumerate}
 
     \begin{figure}{}
         \centering
         \setlength\intextsep{0pt}
-        \vspace{-30pt}
-        \caption{} % leave empty, will print "Figure x" above it
         \includegraphics[width=0.8 \textwidth]{img/gtrends_phases.png}
         \vspace{-5pt}
-        \caption*{Visualization of the generated phases}
-        \vspace{-20pt}
+        \caption{Visualization of the generated phases}
+        \vspace{-10pt}
         \label{fig:gtrends_phases}
     \end{figure}
+
+    Following the identification of phases, a random sample from the results of the \textit{videos} endpoint was drawn and designated for manual classification into conspirative and non-conspirative content. This classification was conducted using a tkinter app, which presented the rater with the title and description of a given video. A link to the full video was also provided for cases where unambiguous classification based on the previous attributed was not possible. In total, 400 videos were classified, allowing for a train-test split of 300/100 videos.
+
+    In order to facilitate automatic classification via supervised learning techniques, the video's titles and descriptions were preprocessed. This included the removal of links, newlines, non-alphanumeric characters and stopwords, as well as tokenizing and lemmatizing. These cleaned versions were included in a dataframe containing video-level information. This dataframe also included the phase, week of upload, video id, raw versions of the video's title and description as well as the number of views, likes and comments. Sadly, the number of times a video has been shared is no longer reported in the video metadata. Thus, hypothesis \ref{h:3} can only be tested with regards to likes and comments per view.
+
+    In order to ensure the best possible performance, multiple supervised learning techniques were applied and evaluated. Specifically, the approaches employed by this project include the (Gaussian) Naive Bayes, Support Vector Machine and Random Forest algorithms from the sklearn python package \parencite{pedregosaScikitlearnMachineLearning2011}. All three models were fitted using the 300 tweets in the training data and evaluated based on their performance on the test set. The evaluations informed the final model choice and are not part of the substantial analysis and are thus presented in this section. 
+
+    \begin{wrapfigure}{r}{0.5\textwidth}
+        \setlength\intextsep{0pt}
+        \vspace{-10pt}
+        \includegraphics[width=0.48 \textwidth]{img/labels_performance.png}
+        \vspace{-5pt}
+        \caption{Performance metrics of supervised learning models}
+        \vspace{-10pt}
+        \label{fig:performance}
+    \end{wrapfigure}
+
+    Based on the performance metrics visualized in \ref{fig:performance}, the Naive Bayes classifier was selected, as it provided the highest accuracy as well as the highest F1-scores in the sample. However, based on the uncertainty estimates plotted above, it is important to highlight that this performance was no statistically significant advantage of Naive Bayes when compared to other algorithms, with especially the random forest algorithm often performing similarly. Thus, other training and testing samples may have resulted in the selection of a different model. The model was then used to automatically classify all 2943 videos, with the classifications being added to the video dataframe. 
+
+    Finally, the emotion classification model LEIA was applied to obtain the sentiments expressed in each of the 204093 top-level comments. This also involved the creation of a new dataframe saving comment-level information including the phase, week and video id of the comment, as well as the comment id and text. Notably, the comment texts were not cleaned before classification as to preserve important contextual information, which can be utilized by LEIA (in contrast to the supervised learning models above). The classification was done on a local machine over several hours.
     
 \section{Analysis}
 \label{section:analysis}
 
-    \textcolor{red}{Perform statistical analyses and visualizations that assess the question(s).}
+    The following analysis section will group the findings of the project by hypothesis.
+
+    \subsection{Videos produced before the first spike in public interest are more likely to be non-conspirative compared to those uploaded during and after the spike.}
+
+    \begin{wrapfigure}{r}{0.6\textwidth}
+        \centering
+        \vspace{-20pt}
+        \setlength\intextsep{0pt}
+        \includegraphics[width=0.58 \textwidth]{img/conspirative_phase.png}
+        \vspace{-5pt}
+        \caption{Share of conspiracy narratives per phase}
+        \vspace{-10pt}
+        \label{fig:conspiracy_phase}
+    \end{wrapfigure}
+
+    To test this hypothesis, a contingency table of the variables \textit{video phase} and \textit{conspirative} was constructed. A normalized version of this table is visualized in \ref{fig:conspiracy_phase}. In line with the hypothesis, the phase before the first spike in public expressed the lowest share of conspirative content. Notably, the share of conspirative content staded above 50\% for all following phases. This runs counter to the theory outlined in the \nameref{section:processing} section, as an influx in mass media attention should've also increased the amount of informative content debunking the conspiracy theory. Nevertheless, the tendencies predicted by the hypothesis are found in the data.
+    
+    After this exploratory analysis, a test for statistical independence of two categorical variables was conducted. Due to the large sample size and differing group sizes, Pearson's Chi-squared test was chosen. Two variants of the test were conducted: Test 1a was based on a dataset distinguishing between all 4 phases, while test 1b was conducted by first grouping the data of phases 2, 3 and 4 together to more closely align with the hypothesis above. Both tests were highly significant, with Chi-square statistics of $210.93$ ($p < 0.001$) and $108.13$ ($p < 0.001$) respectively. Thus, this project was able to confidently reject the null hypothesis, showcasing a significant increase in conspirative content.    
+
+    In addition to the per-phase analysis conducted in the above test, a continuous visualization of the progression of the rate of conspirative content was generated. The findings are presented in the additional figures provided in the \href{https://github.com/julia-king-edu/so-24_smda_project}{github repository}. 
+
+    \subsection{Comments under conspirative videos express higher levels of negative sentiment compared to comments under non-conspirative videos.}
+
+    \begin{wrapfigure}{r}{0.6\textwidth}
+        \centering
+        \vspace{-20pt}
+        \setlength\intextsep{0pt}
+        \includegraphics[width=0.58 \textwidth]{img/moods_conspirative-pie.png}
+        \vspace{-5pt}
+        \caption{Distribution of comment moods by conspirative classification}
+        \vspace{-10pt}
+        \label{fig:moods_conspirative-pie}
+    \end{wrapfigure}
+
+    To explore this hypothesized connection, the distribution of sentiments in the comments of conspirative and non-conspirative videos was visualized in figure \ref{fig:moods_conspirative-pie}. Significant differences in the distribution of detailed moods are observable. This is especially pronounced when observing the sentiment anger, which increases from 49\% for non-conspirative videos to 59\% for conspirative videos. However, the differences in grouped moods are much less pronounced, only differing by about 3\%. While the direction of this change is consistent with the hypothesis outlined above, the small magnitude of this difference is noteworthy.
+
+    Nevertheless, two Chi-squared test were conducted, one for the detailed sentiments and one with a polarity grouping matching the hypothesis above, were conducted. Once again, both tests revealed highly significant correlations, with Chi-square statistics of $1761.02$ ($p < 0.001$) and $242.75$ ($p < 0.001$) respectively. These results can be explained by the large sample size (204093 comments in total), as large samples are able to establish significance even if the differences in group means are minimal.
+
+    \subsection{The engagement metrics (e.g., likes, comments, shares per view) of conspirative videos differ significantly from those of non-conspirative videos, with conspirative videos having higher engagement rates per view.}
+
+    \begin{wraptable}{r}{0.3\textwidth}
+        \begin{tabular}{ll|ll|}
+        \cline{3-4}
+                                                                                                          &          & \multicolumn{2}{l|}{conspirative} \\ \cline{3-4} 
+                                                                                                          &          & True            & False           \\ \hline
+        \multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}metric \\ per view\end{tabular}}} & likes    & 0.052           & 0.026           \\
+        \multicolumn{1}{|l|}{}                                                                            & comments & 0.004           & 0               \\ \hline
+        \end{tabular}
+        \caption{Median engagement metrics}
+        \label{table:median_metrics}
+    \end{wraptable}
+
+    In order to test this hypothesis, per-view metrics were created and tested for normality. Notably, this required the exclusion of 122 videos, which featured obviously erroneous query results, including more like and/or comments than views. Visual inspection of the figures plotting the distributions of likes and comments per view (which can be found in the \href{https://github.com/julia-king-edu/so-24_smda_project}{github repository}) revealed strong non-normal distributions, even when logged. Thus, table \ref{table:median_metrics} shows the median engagement metrics per view. In line with our hypothesis, they are higher for conspirative videos.
+    
+    Due to the aforementioned non-normalcy of the distributions, a nonparametric test was chosen instead of a traditional t-test. Specifically, the Mann-Whitney U rank test was employed, as it compares rank sums instead of means, allowing for non-normal distributions to be compared. Both tests yielded highly significant results, with U-statistics of $1169852.5$ ($p < 0.001$) for likes and $1064695.5$ ($p < 0.001$) for comments. Therefore, we find significant evidence of increased engagement with conspirative videos.    
 
 \section{Conclusion}
 \label{section:conclusion}
 
-    \textcolor{red}{Evaluate answers to the question and their reliability.}
+    This project found statistically significant evidence for all three main hypohteses outlined in the research proposal. First, it established that conspirative content rapidly increased during the first spike in public attention. This sudden influx may indicate an audience overlap with preceeding conspiracy theories, as the 15-minute city conspiracy theory may have been shared in those channels. Further evidence for this can be found in the fact that conspirative videos in the dataset often refer to other conspiracy theories, including the New World Order conspiracy theory (see \cite{sparkConjuringOrderNew2000}). 
+
+    Second, the project finds evidence of increased negative sentiment in the comments of conspirative videos. However, as outlined in the previous section, the substantive difference between the two groups was minimal when only observing sentiment valence, and significantly increased when introducing additional emotion dimensions. Thus, the reliability and generalizability of hypothesis \ref{h:2} is severely diminished by the oversimplification of the emotion space when observing reactions to conspiracy theories and future project should utilize a more detailed operationalization.
+
+    Third, conspirative videos in the sample experienced significantly higher levels of engagement per view. This discovery is in line with previous research, which has shown other kinds of engagement inspired by conspiracy theories, including political engagement \parencite{kimHowConspiracyTheories2022}. However, the findings here only pertain to the most-viewed videos per week and can thus not be generalized to all conspirative videos. 
 
 \section{Critique}
 \label{section:critique}
 
     \textcolor{red}{Identify limitations and alternative explanations for your results.}
 
-    Further research points: 
--what was the “spark” leading conspiracy-prone accounts to this topic? (e.g., inclusion of measure in 2020 campaign by Paris mayor Anne Hidalgo – but conspiracies mainly emerging 3 years later?)
--Hypothesis: theories were driven by accounts already engaged in the “conspiracy bubble”
+    As mentioned in the \nameref{section:analysis} section, the calculation of per-view metrics revealed undeniably erroneous data provided by the YouTube Data api, including instances where likes exceed view counts by factors of up to 5. Notably, these errors are also present on the YouTube website (\href{https://www.youtube.com/watch?v=XVKdKDHH7UE}{see this video for an example}) and thus not caused by errors in the project. Nevertheless, these discrepancies might impact the results, especially if such errors also occur in the non-detectable range, for instance with inflated like counts that do not exceed the view count.
+
+    Additionally, while the increase in google searches coincides with an increased share of conspirative YouTube videos, the causality of these events is unclear. Thus, it is possible that the sharp increase in conspirative content was not the product of organically occuring public attention but instead of thought leaders engaged in the wider "conspiracy bubble" promoting the 15-minute city conspiracy theory. Consequently, a qualitative analysis of early conspirative videos may reveal further insights into the emergence of conspiracy theories not pertaining to large events or hard-to-explain phenomena.
+
+    Finally, this project conducted extensive testing of the applied supervised learning techniques to ensure the usage of a well-performing model. However, the performance metrics (see figure \ref{fig:performance}) reveal imbalances between the labels for all three algorithms, with significantly higher recall and lower precision for conspirative videos, which may have lead to an overestimation of conspirative content and could inflate the results. Future projects should thus expand on model selection to aim for a closer match to the data.    
 
 \newpage
 

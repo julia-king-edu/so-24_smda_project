@@ -12,9 +12,10 @@
 \usepackage{csquotes}
 \usepackage{wrapfig}
 \usepackage{caption}
-\usepackage[a4paper, top=2cm, bottom=2cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage[a4paper, top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
 \MakeOuterQuote{"}
 \usepackage{array}   % for \newcolumntype macro
+\usepackage{multirow}
 \newcolumntype{L}{>{$}l<{$}} % math-mode version of "l" column type
 \newcolumntype{C}{>{$}c<{$}} % math-mode version of "c" column type
 \newcolumntype{R}{>{$}r<{$}} % math-mode version of "r" column type
@@ -24,7 +25,8 @@
 %%%%%%%%%%%%%%
 
 %formatting
-\renewcommand{\thesubsection}{\thesection.\alph{subsection}} %changes subsection labelling to alphabetical -> 1.a instead of 1.1
+\renewcommand{\thesubsection}{\thesection.H\arabic{subsection}} %changes subsection labelling to alphabetical -> 1.a instead of 1.1
+\captionsetup{labelfont=bf, textfont=it, justification=raggedright,singlelinecheck=false, justification=centering}
 %generalmath
 \newcommand\br[1]{\ensuremath{\left(#1\right)}}
 \newcommand\modulo[1]{\ensuremath{\bmod{\left(#1\right)}}} %adds \modulo{} as command for modulo calculations. Content is placed in brackets.
